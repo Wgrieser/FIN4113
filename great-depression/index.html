@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Great Depression Case</title>
+<title>FIN 4113 Case</title>
 <style>
 :root{--bg:#fbfaf8;--card:#fff;--ink:#1c1b1a;--mut:#5f5c58;--line:#e3dfd9;
 --org:#d4560a;--orgs:#fdf0e6;--nav:#1f3864;--navs:#eaeefa;--grn:#17683f;--grns:#e6f4ec;--red:#b3261e;--reds:#fbeaea;
@@ -95,8 +95,8 @@ textarea:focus,input.n:focus,select:focus{outline:2px solid var(--org);outline-o
 <div class="wrap">
   <div class="dq" id="dq">
     <h3>Your discussion question (required)</h3>
-    <p>Write one genuine question about the Great Depression that you would like the class to discuss. During class, the wheel may pick you to ask it and explain why it matters.</p>
-    <textarea id="dqt" placeholder="For example, could the Fed have defended gold and still saved the banks?"></textarea>
+    <p>Write one genuine question about <span id="topic"></span> that you would like the class to discuss. During class, the wheel may pick you to ask it and explain why it matters.</p>
+    <textarea id="dqt" placeholder=""></textarea>
     <div class="row"><button class="btn" id="dqs">Send my question</button><span class="msg" id="dqm"></span></div>
   </div>
   <div id="body"></div>
@@ -117,7 +117,10 @@ const SESSION = {
   title: "The Great Depression, 1929 to 1939",
   subtitle: "When central banking was not enough",
   course: "FIN 4113 Financial Markets and Institutions",
-  prof: "Professor Grieser"
+  prof: "Professor Grieser",
+  short: "Great Depression",
+  topic: "the Great Depression",
+  example: "could the Fed have defended gold and still saved the banks?"
 };
 
 const BLOCKS = [
@@ -232,7 +235,7 @@ const LS = {
 const KEY = 'fin4113:' + SESSION.id;
 let DEVICE = LS.get('fin4113:device', null);
 if (!DEVICE) { DEVICE = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now()); LS.set('fin4113:device', DEVICE); }
-let ME = null, CHANGES = 1, NAMES = [], QSENT = LS.get(KEY + ':qsent', false);
+let ROSTER_LOADED = false, ME = null, CHANGES = 1, NAMES = [], QSENT = LS.get(KEY + ':qsent', false);
 let DRAFT = LS.get(KEY + ':draft', {});
 
 async function call(action, body) {
@@ -264,7 +267,8 @@ const errText = e => ERR[e.message] || ('Could not reach the server (' + e.messa
 
 /* ---------- render content ---------- */
 function render() {
-  $('ttl').textContent = SESSION.title;
+  $('ttl').textContent = SESSION.title; document.title = SESSION.short + ' Case';
+  $('topic').textContent = SESSION.topic; $('dqt').placeholder = 'For example, ' + SESSION.example;
   $('sub').textContent = SESSION.subtitle + ' · ' + SESSION.course + ' · ' + SESSION.prof;
   let n = 0, h = '';
   BLOCKS.forEach(b => {
@@ -338,7 +342,7 @@ function picker(changing) {
   const w = $('who');
   const opts = NAMES.length ? NAMES.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('') : '';
   w.innerHTML = `<span>${changing ? 'Pick your correct name' : 'Who are you?'}</span>
-    <select id="sel"><option value="">${NAMES.length ? 'Select your name' : 'Loading roster...'}</option>${opts}</select>
+    <select id="sel"><option value="">${NAMES.length ? 'Select your name' : (ROSTER_LOADED ? 'Roster not set up yet. Tell Professor Grieser.' : 'Loading roster...')}</option>${opts}</select>
     <button class="btn" id="this" disabled>This is me</button>` + (changing ? `<button class="lnk" id="cx">Cancel</button>` : '') + `<span class="msg err" id="whom"></span>`;
   $('sel').onchange = () => { $('this').disabled = !$('sel').value; };
   if (changing) $('cx').onclick = whoRender;
@@ -417,7 +421,7 @@ $('tg').onclick = () => {
   ME = null; picker(false);
   try {
     const [r, w] = await Promise.all([call('roster'), call('whoami')]);
-    NAMES = r.names || []; ME = w.name; CHANGES = w.changesLeft;
+    NAMES = r.names || []; ROSTER_LOADED = true; ME = w.name; CHANGES = w.changesLeft;
     whoRender();
   } catch (e) {
     $('banner').innerHTML = `<div class="banner">${esc(errText(e))}</div>`;
