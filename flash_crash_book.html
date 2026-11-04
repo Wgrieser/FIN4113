@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Drain the Book</title><style>
+:root{--bg:#fbfaf8;--card:#fff;--ink:#1c1b1a;--mut:#5f5c58;--line:#e3dfd9;
+--org:#d4560a;--orgs:#fdf0e6;--nav:#1f3864;--navs:#eaeefa;--grn:#17683f;--grns:#e8f5ed;
+--red:#b3261e;--reds:#fdecea;--shadow:0 1px 2px rgba(0,0,0,.05),0 4px 14px rgba(0,0,0,.04)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15161a;--card:#1e2027;--ink:#eceaf0;
+--mut:#a3a0ad;--line:#32353f;--org:#ff9245;--orgs:#3a2415;--nav:#9db4e8;--navs:#1b2740;--grn:#5fcf96;
+--grns:#13301f;--red:#ff7b6e;--reds:#3a1a17;--shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25)}}
+:root[data-theme="dark"]{--bg:#15161a;--card:#1e2027;--ink:#eceaf0;--mut:#a3a0ad;--line:#32353f;
+--org:#ff9245;--orgs:#3a2415;--nav:#9db4e8;--navs:#1b2740;--grn:#5fcf96;--grns:#13301f;
+--red:#ff7b6e;--reds:#3a1a17;--shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+-webkit-text-size-adjust:100%}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 70px}
+header{border-top:5px solid var(--org);background:var(--card);border-bottom:1px solid var(--line)}
+.hd{max-width:980px;margin:0 auto;padding:20px 16px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h1{margin:0;font-size:clamp(21px,3.5vw,30px);letter-spacing:-.025em;flex:1 1 auto}
+.kick{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--org)}
+.hook{max-width:980px;margin:0 auto;padding:0 16px 18px;color:var(--mut);font-size:15.5px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--mut);
+margin:30px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+button{font-family:inherit}
+.big{appearance:none;border:0;background:var(--org);color:#fff;font-size:16px;font-weight:700;
+padding:13px 26px;border-radius:10px;cursor:pointer;box-shadow:var(--shadow)}
+.big:active{transform:translateY(1px)}
+.big:disabled{opacity:.4;cursor:default}
+.alt{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--ink);
+font-size:14.5px;font-weight:600;padding:11px 17px;border-radius:10px;cursor:pointer}
+.alt.on{background:var(--nav);border-color:var(--nav);color:#fff}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}
+.sw{font-size:14px;color:var(--mut);display:flex;gap:7px;align-items:center;cursor:pointer;
+border:1px solid var(--line);background:var(--card);padding:9px 14px;border-radius:10px}
+.sw.on{border-color:var(--org);color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+box-shadow:var(--shadow);margin:12px 0}
+.pay{border-left:4px solid var(--org);background:var(--orgs);border-radius:0 10px 10px 0;
+padding:14px 18px;margin:14px 0;font-size:15px}
+.pay b{color:var(--org)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.st{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 14px;text-align:center}
+.st .v{font-size:clamp(19px,3.4vw,27px);font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.st .k{font-size:11px;font-weight:650;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);margin-top:3px}
+.st.hot .v{color:var(--red)}.st.good .v{color:var(--grn)}.st.o .v{color:var(--org)}
+.mut{color:var(--mut);font-size:13.5px}
+.thm{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--mut);
+font-size:12.5px;font-weight:650;padding:6px 12px;border-radius:99px;cursor:pointer}
+.note{font-size:13.5px;color:var(--mut);margin-top:8px}
+</style></head><body>
+<header><div class="hd"><div style="flex:1 1 auto"><div class="kick">FIN 4113 · The Flash Crash, May 6 2010</div><h1>Drain the Book</h1></div>
+<button class="thm" id="thm">Dark</button></div></header>
+<div class="hook">A trading algorithm was told to sell 9 percent of the last minute's volume. Nobody told it what volume actually means.</div>
+<style>
+.px{font-size:clamp(40px,10vw,76px);font-weight:800;letter-spacing:-.035em;line-height:1;
+font-variant-numeric:tabular-nums;text-align:center;margin:6px 0 2px}
+.px.fall{color:var(--red)}.px.halt{color:var(--org)}
+.sub{text-align:center;font-size:13px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+color:var(--mut);min-height:20px;margin-bottom:10px}
+.sub.halt{color:var(--org)}.sub.stub{color:var(--red)}
+#chart{width:100%;height:170px;display:block;background:var(--card);border:1px solid var(--line);
+border-radius:12px}
+.book{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:12px}
+.lv{display:flex;align-items:center;gap:10px;margin:3px 0;font-size:12.5px;
+font-variant-numeric:tabular-nums}
+.lv .p{width:62px;text-align:right;font-weight:700;color:var(--mut)}
+.lv .b{flex:1 1 auto;height:17px;border-radius:5px;background:var(--navs);overflow:hidden}
+.lv .f{height:100%;background:var(--nav);transition:width .12s linear}
+.lv.stub .f{background:var(--red)}
+.lv .q{width:58px;font-size:11.5px;color:var(--mut)}
+.lv.gone .f{width:0!important}
+</style>
+
+<div class="wrap">
+
+<div class="px" id="px">$1,160.00</div>
+<div class="sub" id="sub">E-mini S&amp;P 500 · 2:42 p.m.</div>
+<canvas id="chart" width="1800" height="340"></canvas>
+
+<div class="stats">
+  <div class="st o"><div class="v" id="vol">0</div><div class="k">Contracts traded</div></div>
+  <div class="st good"><div class="v" id="net">0</div><div class="k">Real bids consumed</div></div>
+  <div class="st"><div class="v" id="dep">100%</div><div class="k">Real depth left</div></div>
+  <div class="st"><div class="v" id="sold">0</div><div class="k">Fund still to sell</div></div>
+</div>
+
+<div class="bar">
+  <button class="big" id="run">Run May 6</button>
+  <button class="alt" id="sell">Sell 500 by hand</button>
+  <button class="alt" id="reset">Reset</button>
+</div>
+<div class="bar">
+  <label class="sw on" id="w1"><input type="checkbox" id="hp" checked> Hot potato: HFTs pass contracts to each other</label>
+  <label class="sw on" id="w2"><input type="checkbox" id="al" checked> Fund's algorithm sells 9% of last minute's volume</label>
+  <label class="sw" id="w3"><input type="checkbox" id="lu"> Limit Up, Limit Down price bands (added 2013)</label>
+</div>
+
+<h2>The order book</h2>
+<div class="book" id="book"></div>
+<p class="note">Each bar is a resting bid. Selling eats them from the top down. Real buyers trickle back slowly.
+When high-frequency firms pull their quotes, the bars vanish without anyone having bought anything.</p>
+
+<h2>What you just watched</h2>
+<div class="pay"><b>Volume is not depth.</b> Compare the two numbers above. On the real May 6, high-frequency firms
+traded more than 27,000 contracts in fourteen seconds and bought about 200 of them net. Everything else was the same
+contracts changing hands between machines.</div>
+<div class="pay"><b>The algorithm was reading the wrong number.</b> It was told to sell 9 percent of the previous
+minute's volume, with no price limit and no time limit. Churn looks exactly like demand if volume is all you measure,
+so the faster the machines passed contracts around, the faster the fund sold into a market with nobody left in it.</div>
+<div class="pay"><b>Switch on the price bands and run it again.</b> Nothing about fear changes. The band simply stops a
+price from printing far away from the market and pauses trading instead, which is why in August 2024 the VIX went
+higher than it did in 2010 and no large ETF detached from the index.</div>
+</div>
+<script>
+const $=s=>document.getElementById(s);
+const P0=1160, NL=14, FULL=2500;
+let book=[], price=P0, vol=0, net=0, left=0, path=[], timer=null, halt=0, ref=P0, running=false, volLast=13000;
+
+function reset(){
+  if(timer){clearInterval(timer);timer=null;}
+  running=false; price=P0; vol=0; net=0; left=75000; path=[P0]; halt=0; ref=P0; volLast=13000;
+  book=[];
+  for(let i=0;i<NL;i++) book.push({p:+(P0-i*2.5).toFixed(2), q:FULL, cap:FULL});
+  book.push({p:0.01,q:1e9,cap:1e9,stub:true});
+  $('run').disabled=false; $('run').textContent='Run May 6';
+  draw(); paint();
+}
+function depthPct(){
+  const real=book.filter(b=>!b.stub);
+  return Math.round(100*real.reduce((s,b)=>s+b.q,0)/(NL*FULL));
+}
+/* consume n contracts from the top of the book */
+function hit(n){
+  let got=0;
+  for(const b of book){
+    if(n<=0)break;
+    const t=Math.min(b.q,n);
+    b.q-=t; n-=t; got+=t; price=b.p;
+    if(b.stub)break;
+  }
+  net+=got; vol+=got;
+  return got;
+}
+function tick(){
+  if(halt>0){
+    halt--;
+    book.forEach(b=>{if(!b.stub)b.q=Math.min(b.cap,b.q+b.cap*0.45);});
+    const best=book.find(b=>!b.stub&&b.q>b.cap*0.30);
+    if(best)price=best.p;
+    if(halt===0){ref=price;volLast=4000;}
+    path.push(price); draw(); paint(); return;
+  }
+  const hp=$('hp').checked, al=$('al').checked, lu=$('lu').checked;
+
+  // real buyers trickle back in
+  book.forEach(b=>{if(!b.stub)b.q=Math.min(b.cap,b.q+b.cap*0.040);});
+
+  // the fund's rule: sell 9% of the previous minute's volume. No price limit, no time limit.
+  let order = al ? Math.max(1200, Math.round(0.09*volLast)) : 1500;
+  order = Math.min(order, left, 14000);
+
+  // HFTs pass each contract they receive back and forth. Volume multiplies, absorption does not.
+  let churn = 0;
+  if(hp){
+    churn = Math.round(order*14 + 300 + Math.random()*400);
+    vol += churn;
+    book.forEach(b=>{if(!b.stub)b.q=Math.max(0,b.q-b.cap*0.055);});
+  }
+
+  if(order>0){ hit(order); left-=order; }
+  volLast = order + churn;
+
+  if(lu && price < ref*0.95){ halt=6; price=+(ref*0.95).toFixed(2); }
+
+  path.push(price);
+  draw(); paint();
+  if(left<=0 && halt<=0){ clearInterval(timer); timer=null; running=false;
+    $('run').disabled=false; $('run').textContent='Run it again'; }
+}
+function paint(){
+  const stub=price<=1, halted=halt>0;
+  const el=$('px');
+  el.textContent='$'+price.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+  el.className='px'+(halted?' halt':(price<P0*0.97?' fall':''));
+  const s=$('sub');
+  s.textContent = halted ? 'TRADING PAUSED — price band hit'
+    : stub ? 'STUB QUOTE — the only bid left is one cent'
+    : 'E-mini S&P 500 · 2:42 p.m.';
+  s.className='sub'+(halted?' halt':(stub?' stub':''));
+  $('vol').textContent=vol.toLocaleString();
+  $('net').textContent=net.toLocaleString();
+  $('dep').textContent=depthPct()+'%';
+  $('sold').textContent=Math.max(0,left).toLocaleString();
+  $('book').innerHTML=book.map(b=>{
+    const w=b.stub?100:Math.max(0,100*b.q/b.cap);
+    return `<div class="lv${b.stub?' stub':''}${w<1?' gone':''}">
+      <span class="p">${b.stub?'$0.01':'$'+b.p.toFixed(2)}</span>
+      <span class="b"><span class="f" style="width:${w}%"></span></span>
+      <span class="q">${b.stub?'stub':Math.round(b.q)}</span></div>`;}).join('');
+  ['w1','w2','w3'].forEach((id,i)=>{
+    const cb=[$('hp'),$('al'),$('lu')][i];
+    $(id).classList.toggle('on',cb.checked);});
+}
+function draw(){
+  const c=$('chart'),x=c.getContext('2d'),W=c.width,H=c.height;
+  x.clearRect(0,0,W,H);
+  const lo=Math.min(...path,P0*0.60), hi=P0*1.01;
+  const X=i=>20+i*(W-40)/Math.max(28,path.length-1);
+  const Y=v=>H-26-((v-lo)/(hi-lo))*(H-52);
+  // reference line
+  x.strokeStyle='rgba(128,128,128,.35)';x.lineWidth=2;x.setLineDash([8,8]);
+  x.beginPath();x.moveTo(20,Y(P0));x.lineTo(W-20,Y(P0));x.stroke();x.setLineDash([]);
+  x.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--org').trim()||'#d4560a';
+  x.lineWidth=4;x.lineJoin='round';x.beginPath();
+  path.forEach((v,i)=>{i?x.lineTo(X(i),Y(v)):x.moveTo(X(i),Y(v));});
+  x.stroke();
+  if(path.length>1){x.fillStyle=x.strokeStyle;x.beginPath();
+    x.arc(X(path.length-1),Y(path[path.length-1]),6,0,7);x.fill();}
+}
+$('run').onclick=()=>{ if(running)return; if(left<=0||path.length>2)reset();
+  running=true; $('run').disabled=true; $('run').textContent='Running...';
+  timer=setInterval(tick,110); window.draw=draw; };
+$('sell').onclick=()=>{ if(running)return; hit(500); path.push(price); draw(); paint(); };
+$('reset').onclick=reset;
+['hp','al','lu'].forEach(id=>$(id).addEventListener('change',paint));
+addEventListener('resize',draw);
+reset();
+document.getElementById('thm').onclick=function(){
+ var c=document.documentElement.getAttribute('data-theme');
+ var dark=c?c==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
+ document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+ this.textContent=dark?'Dark':'Light';
+ if(window.draw)window.draw();};
+</script></body></html>

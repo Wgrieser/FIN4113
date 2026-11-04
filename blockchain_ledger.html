@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tamper With the Ledger</title><style>
+:root{--bg:#fbfaf8;--card:#fff;--ink:#1c1b1a;--mut:#5f5c58;--line:#e3dfd9;
+--org:#d4560a;--orgs:#fdf0e6;--nav:#1f3864;--navs:#eaeefa;--grn:#17683f;--grns:#e8f5ed;
+--red:#b3261e;--reds:#fdecea;--shadow:0 1px 2px rgba(0,0,0,.05),0 4px 14px rgba(0,0,0,.04)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15161a;--card:#1e2027;--ink:#eceaf0;
+--mut:#a3a0ad;--line:#32353f;--org:#ff9245;--orgs:#3a2415;--nav:#9db4e8;--navs:#1b2740;--grn:#5fcf96;
+--grns:#13301f;--red:#ff7b6e;--reds:#3a1a17;--shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25)}}
+:root[data-theme="dark"]{--bg:#15161a;--card:#1e2027;--ink:#eceaf0;--mut:#a3a0ad;--line:#32353f;
+--org:#ff9245;--orgs:#3a2415;--nav:#9db4e8;--navs:#1b2740;--grn:#5fcf96;--grns:#13301f;
+--red:#ff7b6e;--reds:#3a1a17;--shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+-webkit-text-size-adjust:100%}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 70px}
+header{border-top:5px solid var(--org);background:var(--card);border-bottom:1px solid var(--line)}
+.hd{max-width:980px;margin:0 auto;padding:20px 16px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h1{margin:0;font-size:clamp(21px,3.5vw,30px);letter-spacing:-.025em;flex:1 1 auto}
+.kick{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--org)}
+.hook{max-width:980px;margin:0 auto;padding:0 16px 18px;color:var(--mut);font-size:15.5px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--mut);
+margin:30px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+button{font-family:inherit}
+.big{appearance:none;border:0;background:var(--org);color:#fff;font-size:16px;font-weight:700;
+padding:13px 26px;border-radius:10px;cursor:pointer;box-shadow:var(--shadow)}
+.big:active{transform:translateY(1px)}
+.big:disabled{opacity:.4;cursor:default}
+.alt{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--ink);
+font-size:14.5px;font-weight:600;padding:11px 17px;border-radius:10px;cursor:pointer}
+.alt.on{background:var(--nav);border-color:var(--nav);color:#fff}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}
+.sw{font-size:14px;color:var(--mut);display:flex;gap:7px;align-items:center;cursor:pointer;
+border:1px solid var(--line);background:var(--card);padding:9px 14px;border-radius:10px}
+.sw.on{border-color:var(--org);color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+box-shadow:var(--shadow);margin:12px 0}
+.pay{border-left:4px solid var(--org);background:var(--orgs);border-radius:0 10px 10px 0;
+padding:14px 18px;margin:14px 0;font-size:15px}
+.pay b{color:var(--org)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.st{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 14px;text-align:center}
+.st .v{font-size:clamp(19px,3.4vw,27px);font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.st .k{font-size:11px;font-weight:650;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);margin-top:3px}
+.st.hot .v{color:var(--red)}.st.good .v{color:var(--grn)}.st.o .v{color:var(--org)}
+.mut{color:var(--mut);font-size:13.5px}
+.thm{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--mut);
+font-size:12.5px;font-weight:650;padding:6px 12px;border-radius:99px;cursor:pointer}
+.note{font-size:13.5px;color:var(--mut);margin-top:8px}
+</style></head><body>
+<header><div class="hd"><div style="flex:1 1 auto"><div class="kick">FIN 4113 · Blockchain</div><h1>Tamper With the Ledger</h1></div>
+<button class="thm" id="thm">Dark</button></div></header>
+<div class="hook">You have never held money. You have only ever held somebody's promise to update a record. Here is the record.</div>
+<style>
+.chain{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:800px){.chain{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:470px){.chain{grid-template-columns:1fr}}
+.blk{background:var(--card);border:2px solid var(--grn);border-radius:12px;padding:12px;box-shadow:var(--shadow);
+transition:border-color .2s,background .2s}
+.blk.bad{border-color:var(--red);background:var(--reds)}
+.blk h3{margin:0 0 8px;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--mut);
+display:flex;justify-content:space-between;align-items:center}
+.tag{font-size:10px;font-weight:800;letter-spacing:.06em;padding:2px 7px;border-radius:99px;
+background:var(--grns);color:var(--grn)}
+.blk.bad .tag{background:var(--reds);color:var(--red)}
+.blk label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+color:var(--mut);margin:8px 0 3px}
+.blk textarea{width:100%;height:62px;resize:none;font:inherit;font-size:13px;line-height:1.35;
+background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 9px}
+.blk textarea:focus{outline:2px solid var(--org);outline-offset:1px}
+.hash{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;letter-spacing:.02em;
+background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:6px 8px;word-break:break-all}
+.hash.lnk{color:var(--mut)}
+.blk.bad .hash{color:var(--red)}
+.ledger{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.ledger{grid-template-columns:1fr}}
+.who{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
+.who h3{margin:0 0 6px;font-size:15.5px}
+.who p{margin:0;font-size:14px;color:var(--mut)}
+.verdict{font-size:clamp(20px,4vw,30px);font-weight:800;letter-spacing:-.02em;text-align:center;padding:14px}
+.verdict.ok{color:var(--grn)}.verdict.no{color:var(--red)}
+</style>
+
+<div class="wrap">
+
+<h2>Step 1. Who keeps the ledger?</h2>
+<div class="ledger">
+  <div class="who"><h3>Your bank knows your balance.</h3>
+  <p>You do not. You hold a promise to update a record that somebody else keeps. Same for DTCC and the shares
+  you own, and for the clearinghouse and your futures position. One keeper, one copy, total trust.</p></div>
+  <div class="who"><h3>Cash cannot be spent twice.</h3>
+  <p>Handing over a bill removes it from your pocket. A file copies perfectly and forever, so digital money
+  cannot work on possession. It has to work on a list of who has what. That list is the whole problem.</p></div>
+</div>
+
+<h2>Step 2. Now try to rewrite history</h2>
+<p class="mut">A blockchain gives the list to everyone and chains each entry to the one before it. Edit any block below
+and watch what happens to the blocks after it.</p>
+
+<div class="chain" id="chain"></div>
+
+<div class="stats">
+  <div class="st" id="s1"><div class="v">0</div><div class="k">Blocks broken</div></div>
+  <div class="st" id="s2"><div class="v">0</div><div class="k">Blocks you must redo</div></div>
+  <div class="st o" id="s3"><div class="v">VALID</div><div class="k">Chain status</div></div>
+</div>
+<div class="bar">
+  <button class="big" id="reset">Put it back</button>
+  <button class="alt" id="remine">Re-mine the whole chain</button>
+</div>
+<p class="note">Each fingerprint is computed from the block's own text plus the fingerprint before it. Change one
+character and every fingerprint downstream stops matching. To make a lie stick you would have to redo all of them,
+faster than thousands of other computers are extending the real chain. That is the entire security model.</p>
+
+<h2>Step 3. The part nobody puts on the poster</h2>
+<div class="card">
+  <p style="margin:0 0 10px;font-size:14.5px">Here is a block. It is correctly formed, correctly signed and correctly
+  chained. Press verify.</p>
+  <div class="hash" style="font-size:13.5px;line-height:1.5">Block #9 &nbsp;·&nbsp; <b>"FTX holds 100% of customer
+  deposits. Nothing has been lent to Alameda."</b></div>
+  <div class="verdict" id="vd">&nbsp;</div>
+  <div class="bar" style="justify-content:center;margin-top:0"><button class="big" id="verify">Verify this block</button></div>
+</div>
+
+<div class="pay" id="pay" style="display:none">
+<b>The chain was telling the truth.</b> It said nobody had altered the record. It never said the record was correct.
+Nothing a network can check tells you whether the money was actually there, because the transfer to Alameda was
+never written down here. The blockchain worked perfectly for the entire duration of the fraud.
+</div>
+
+<h2>What to take away</h2>
+<div class="pay"><b>Blockchain changes who keeps the ledger.</b> It changes nothing about what can go wrong with the
+things the ledger describes. Verifying a record is not the same as verifying a fact, which is the Market for Lemons
+problem sitting exactly where it always sat.</div>
+<div class="pay"><b>It buys one real thing.</b> The asset and the payment move in the same instant, so neither side
+delivers and waits. That is the risk that killed Bank Herstatt in 1974, and it is the same job a futures
+clearinghouse does by standing in the middle instead.</div>
+<div class="pay"><b>And it costs the middleman's other jobs.</b> Nobody to reverse a mistake, nobody to lend across
+the settlement gap, no lender of last resort. Which is why crypto rebuilt exchanges, and why one of them was
+holding eight billion dollars of customer money.</div>
+</div>
+<script>
+const $=s=>document.getElementById(s);
+const SEED=["Satoshi pays Alice 50 coins","Alice pays Bob 18 coins","Bob pays Carol 7 coins","Carol pays Dave 3 coins"];
+let DATA=SEED.slice(), MINED=[];
+
+/* A simplified stand-in for SHA-256. Real chains use SHA-256; what matters here is
+   that one changed character scrambles the whole fingerprint. */
+function h(str){
+  let a=0x811c9dc5,b=0x01000193,c=0xdeadbeef,d=0x9e3779b9;
+  for(let i=0;i<str.length;i++){
+    const k=str.charCodeAt(i);
+    a=(a^k)*b>>>0; a=(a<<13|a>>>19)>>>0;
+    c=(c+k*2654435761)>>>0; c=(c<<7|c>>>25)>>>0;
+    d=(d^(a+c))>>>0; d=(d*16777619)>>>0;
+  }
+  const hx=n=>('00000000'+(n>>>0).toString(16)).slice(-8);
+  return (hx(a)+hx(d)).slice(0,16);
+}
+const hashOf=(i,prev)=>h('#'+i+'|'+DATA[i]+'|'+prev);
+
+function chainHashes(){
+  const out=[];let prev='0000000000000000';
+  for(let i=0;i<DATA.length;i++){const x=hashOf(i,prev);out.push({prev,hash:x});prev=x;}
+  return out;
+}
+function render(){
+  const live=chainHashes();
+  let broken=0, firstBad=-1;
+  const el=$('chain');
+  if(!el.children.length){
+    el.innerHTML=DATA.map((d,i)=>`<div class="blk" id="b${i}">
+      <h3>Block ${i+1}<span class="tag" id="t${i}">OK</span></h3>
+      <label>Data</label><textarea id="d${i}" spellcheck="false"></textarea>
+      <label>Previous fingerprint</label><div class="hash lnk" id="p${i}"></div>
+      <label>This block's fingerprint</label><div class="hash" id="x${i}"></div>
+    </div>`).join('');
+    DATA.forEach((d,i)=>$('d'+i).addEventListener('input',e=>{DATA[i]=e.target.value;render();}));
+  }
+  DATA.forEach((d,i)=>{
+    if($('d'+i).value!==d)$('d'+i).value=d;
+    $('p'+i).textContent=live[i].prev;
+    $('x'+i).textContent=live[i].hash;
+    const bad = MINED.length ? live[i].hash!==MINED[i] : false;
+    if(bad&&firstBad<0)firstBad=i;
+    const dirty = firstBad>=0 && i>=firstBad;
+    $('b'+i).classList.toggle('bad',dirty);
+    $('t'+i).textContent=dirty?'BROKEN':'OK';
+    if(dirty)broken++;
+  });
+  $('s1').querySelector('.v').textContent=broken;
+  $('s2').querySelector('.v').textContent=broken;
+  const ok=broken===0;
+  const s3=$('s3');
+  s3.querySelector('.v').textContent=ok?'VALID':'TAMPERED';
+  s3.className='st '+(ok?'good':'hot');
+}
+function mine(){MINED=chainHashes().map(x=>x.hash);render();}
+$('reset').onclick=()=>{DATA=SEED.slice();mine();};
+$('remine').onclick=()=>{mine();};
+$('verify').onclick=()=>{
+  const v=$('vd'); v.textContent='VALID. Not one character altered.'; v.className='verdict ok';
+  $('pay').style.display='block';
+  $('verify').disabled=true;
+};
+mine();
+document.getElementById('thm').onclick=function(){
+ var c=document.documentElement.getAttribute('data-theme');
+ var dark=c?c==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
+ document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+ this.textContent=dark?'Dark':'Light';};
+</script></body></html>

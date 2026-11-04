@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Squeeze</title><style>
+:root{--bg:#fbfaf8;--card:#fff;--ink:#1c1b1a;--mut:#5f5c58;--line:#e3dfd9;
+--org:#d4560a;--orgs:#fdf0e6;--nav:#1f3864;--navs:#eaeefa;--grn:#17683f;--grns:#e8f5ed;
+--red:#b3261e;--reds:#fdecea;--shadow:0 1px 2px rgba(0,0,0,.05),0 4px 14px rgba(0,0,0,.04)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15161a;--card:#1e2027;--ink:#eceaf0;
+--mut:#a3a0ad;--line:#32353f;--org:#ff9245;--orgs:#3a2415;--nav:#9db4e8;--navs:#1b2740;--grn:#5fcf96;
+--grns:#13301f;--red:#ff7b6e;--reds:#3a1a17;--shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25)}}
+:root[data-theme="dark"]{--bg:#15161a;--card:#1e2027;--ink:#eceaf0;--mut:#a3a0ad;--line:#32353f;
+--org:#ff9245;--orgs:#3a2415;--nav:#9db4e8;--navs:#1b2740;--grn:#5fcf96;--grns:#13301f;
+--red:#ff7b6e;--reds:#3a1a17;--shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+-webkit-text-size-adjust:100%}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 70px}
+header{border-top:5px solid var(--org);background:var(--card);border-bottom:1px solid var(--line)}
+.hd{max-width:980px;margin:0 auto;padding:20px 16px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h1{margin:0;font-size:clamp(21px,3.5vw,30px);letter-spacing:-.025em;flex:1 1 auto}
+.kick{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--org)}
+.hook{max-width:980px;margin:0 auto;padding:0 16px 18px;color:var(--mut);font-size:15.5px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--mut);
+margin:30px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+button{font-family:inherit}
+.big{appearance:none;border:0;background:var(--org);color:#fff;font-size:16px;font-weight:700;
+padding:13px 26px;border-radius:10px;cursor:pointer;box-shadow:var(--shadow)}
+.big:active{transform:translateY(1px)}
+.big:disabled{opacity:.4;cursor:default}
+.alt{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--ink);
+font-size:14.5px;font-weight:600;padding:11px 17px;border-radius:10px;cursor:pointer}
+.alt.on{background:var(--nav);border-color:var(--nav);color:#fff}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}
+.sw{font-size:14px;color:var(--mut);display:flex;gap:7px;align-items:center;cursor:pointer;
+border:1px solid var(--line);background:var(--card);padding:9px 14px;border-radius:10px}
+.sw.on{border-color:var(--org);color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+box-shadow:var(--shadow);margin:12px 0}
+.pay{border-left:4px solid var(--org);background:var(--orgs);border-radius:0 10px 10px 0;
+padding:14px 18px;margin:14px 0;font-size:15px}
+.pay b{color:var(--org)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.st{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 14px;text-align:center}
+.st .v{font-size:clamp(19px,3.4vw,27px);font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.st .k{font-size:11px;font-weight:650;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);margin-top:3px}
+.st.hot .v{color:var(--red)}.st.good .v{color:var(--grn)}.st.o .v{color:var(--org)}
+.mut{color:var(--mut);font-size:13.5px}
+.thm{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--mut);
+font-size:12.5px;font-weight:650;padding:6px 12px;border-radius:99px;cursor:pointer}
+.note{font-size:13.5px;color:var(--mut);margin-top:8px}
+</style></head><body>
+<header><div class="hd"><div style="flex:1 1 auto"><div class="kick">FIN 4113 · GameStop, January 2021</div><h1>The Squeeze</h1></div>
+<button class="thm" id="thm">Dark</button></div></header>
+<div class="hook">Everyone else in a rising market can choose to wait. A short seller cannot. That one asymmetry is the whole story.</div>
+<style>
+.px{font-size:clamp(40px,10vw,76px);font-weight:800;letter-spacing:-.035em;line-height:1;
+font-variant-numeric:tabular-nums;text-align:center;margin:6px 0 2px;color:var(--grn)}
+.sub{text-align:center;font-size:13px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+color:var(--mut);min-height:20px;margin-bottom:12px}
+#chart{width:100%;height:160px;display:block;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.shorts{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:12px}
+@media(max-width:760px){.shorts{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:450px){.shorts{grid-template-columns:repeat(2,1fr)}}
+.sh{background:var(--card);border:2px solid var(--line);border-radius:11px;padding:10px;text-align:center;
+transition:border-color .25s,background .25s,transform .25s}
+.sh .nm{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.sh .at{font-size:16px;font-weight:800;margin:3px 0 1px;font-variant-numeric:tabular-nums}
+.sh .st{font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;margin-top:5px;color:var(--grn)}
+.sh.called{border-color:var(--org);background:var(--orgs)}
+.sh.called .st{color:var(--org)}
+.sh.out{border-color:var(--red);background:var(--reds);transform:scale(.95)}
+.sh.out .st{color:var(--red)}
+.gauge{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:12px}
+.gauge .row{display:flex;justify-content:space-between;font-size:13.5px;font-weight:650;margin-bottom:6px}
+.track{height:22px;border-radius:7px;background:var(--navs);overflow:hidden;position:relative}
+.track .f{height:100%;background:var(--nav);transition:width .3s}
+.track .f.over{background:var(--red)}
+.track .mk{position:absolute;top:-3px;bottom:-3px;width:3px;background:var(--ink);opacity:.55}
+input[type=range]{width:100%;accent-color:var(--org)}
+</style>
+
+<div class="wrap">
+
+<div class="px" id="px">$20.00</div>
+<div class="sub" id="sub">GameStop · before the squeeze</div>
+<canvas id="chart" width="1800" height="320"></canvas>
+
+<div class="gauge">
+  <div class="row"><span>Short interest</span><span id="siv">140% of float</span></div>
+  <input type="range" id="si" min="20" max="180" value="140" step="10">
+  <div class="row" style="margin-top:12px"><span>Shares the shorts must buy</span><span id="need">14.0M</span></div>
+  <div class="track"><div class="f" id="fill" style="width:100%"></div><div class="mk" id="mk" style="left:71%"></div></div>
+  <div class="note">The black mark is the entire public float. Everything past it is buying with nowhere to buy from.</div>
+</div>
+
+<div class="stats">
+  <div class="st o"><div class="v" id="pxs">$20</div><div class="k">Price</div></div>
+  <div class="st hot"><div class="v" id="outn">0</div><div class="k">Shorts blown out</div></div>
+  <div class="st"><div class="v" id="bought">0</div><div class="k">Shares they had to buy</div></div>
+  <div class="st good"><div class="v" id="hold">10</div><div class="k">Shorts still holding</div></div>
+</div>
+
+<div class="bar">
+  <button class="big" id="go">Good news hits</button>
+  <button class="alt" id="reset">Reset</button>
+</div>
+
+<h2>The ten short sellers</h2>
+<div class="shorts" id="shorts"></div>
+<p class="note">Each one borrowed a share and sold it, betting the price would fall. Each has a cushion of cash with
+their broker. When the price rises past that cushion, the broker does not ask politely.</p>
+
+<h2>What you just watched</h2>
+<div class="pay"><b>A short seller's demand curve points the wrong way.</b> To close a short you have to buy. So a
+rising price forces the people betting against the stock to become buyers, which raises the price, which forces the
+next one. Everyone else can wait. They cannot.</div>
+<div class="pay"><b>Push the slider past 100 percent and it stops being a market.</b> More shares have been sold
+short than exist to buy, because a borrowed share can be lent again. The shorts collectively owe more stock than is
+available at any price, so the only thing that can clear the imbalance is the price itself.</div>
+<div class="pay"><b>Now compare it to our own game.</b> In the Activist Hedge Fund Game nobody could short at all,
+and prices sat above the six dollar fundamental for six straight rounds. Here people could short, heavily, and the
+price still left fundamentals behind. Either the pessimists cannot act, or they can act and then get forced out.
+Both roads end with an optimist setting the price.</div>
+</div>
+<script>
+const $=s=>document.getElementById(s);
+const P0=20, N=10, FLOAT=10;           // float in millions of shares
+const NAMES=['Melvin','Maplelane','Citron','Candlestick','D1','Point72','White Sq','Altimeter','Sylebra','Senvest'];
+let shorts=[], price=P0, path=[P0], bought=0, timer=null, running=false, quiet=0;
+
+function si(){ return +$('si').value; }                 // short interest, % of float
+function needM(){ return FLOAT*si()/100; }              // shares shorts must buy, millions
+
+function reset(){
+  if(timer){clearInterval(timer);timer=null;}
+  running=false; price=P0; path=[P0]; bought=0; quiet=0;
+  const per=needM()/N;
+  // each short can absorb a different adverse move before the broker forces the issue
+  shorts=NAMES.map((n,i)=>({n,at:P0,size:per,cushion:0.18+i*i*0.035,state:'ok'}));
+  $('go').disabled=false; $('go').textContent='Good news hits';
+  draw(); paint();
+}
+const K=2.2;   // price impact per million shares of forced buying, relative to the float
+function step(){
+  // pop the most exposed short still standing, one per tick so the cascade is visible
+  let popped=null;
+  for(const s of shorts){
+    if(s.state==='out')continue;
+    if((price-s.at)/s.at > s.cushion){ popped=s; break; }
+  }
+  if(popped){
+    popped.state='out'; bought+=popped.size; quiet=0;
+    price = +(price*(1+K*popped.size/FLOAT)).toFixed(2);
+  } else { quiet++; }
+
+  // everyone else just gets a margin warning
+  shorts.forEach(s=>{ if(s.state==='ok' && (price-s.at)/s.at > s.cushion*0.65) s.state='called'; });
+
+  path.push(price); draw(); paint();
+
+  const live=shorts.filter(s=>s.state!=='out').length;
+  if(live===0 || quiet>8 || path.length>90){
+    clearInterval(timer); timer=null; running=false;
+    $('go').disabled=false; $('go').textContent='Run it again';
+    $('sub').textContent = live===0
+      ? 'Every short is out. Nobody is left who has to buy.'
+      : 'The squeeze stalled. The shorts still standing could sit it out.';
+  }
+}
+function paint(){
+  $('px').textContent='$'+price.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+  $('pxs').textContent='$'+Math.round(price).toLocaleString();
+  const out=shorts.filter(s=>s.state==='out').length;
+  $('outn').textContent=out;
+  $('hold').textContent=N-out;
+  $('bought').textContent=bought.toFixed(1)+'M';
+  $('siv').textContent=si()+'% of float';
+  $('need').textContent=needM().toFixed(1)+'M';
+  const maxM=FLOAT*1.8;
+  $('fill').style.width=Math.min(100,100*needM()/maxM)+'%';
+  $('fill').classList.toggle('over',si()>100);
+  $('mk').style.left=(100*FLOAT/maxM)+'%';
+  $('shorts').innerHTML=shorts.map(s=>{
+    const lbl=s.state==='out'?'BOUGHT BACK':s.state==='called'?'MARGIN CALL':'HOLDING';
+    return `<div class="sh ${s.state}"><div class="nm">${s.n}</div>
+      <div class="at">$${s.at.toFixed(0)}</div>
+      <div class="nm" style="font-size:10px">short ${s.size.toFixed(1)}M</div>
+      <div class="st">${lbl}</div></div>`;}).join('');
+}
+function draw(){
+  const c=$('chart'),x=c.getContext('2d'),W=c.width,H=c.height;
+  x.clearRect(0,0,W,H);
+  const hi=Math.max(...path)*1.06, lo=0;
+  const X=i=>18+i*(W-36)/Math.max(26,path.length-1);
+  const Y=v=>H-24-((v-lo)/(hi-lo))*(H-46);
+  x.strokeStyle='rgba(128,128,128,.35)';x.lineWidth=2;x.setLineDash([8,8]);
+  x.beginPath();x.moveTo(18,Y(P0));x.lineTo(W-18,Y(P0));x.stroke();x.setLineDash([]);
+  x.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--grn').trim()||'#17683f';
+  x.lineWidth=4;x.lineJoin='round';x.beginPath();
+  path.forEach((v,i)=>{i?x.lineTo(X(i),Y(v)):x.moveTo(X(i),Y(v));});
+  x.stroke();
+  if(path.length>1){x.fillStyle=x.strokeStyle;x.beginPath();
+    x.arc(X(path.length-1),Y(path[path.length-1]),6,0,7);x.fill();}
+}
+$('go').onclick=()=>{ if(running)return; if(path.length>2)reset();
+  running=true; $('go').disabled=true; $('go').textContent='Squeezing...';
+  $('sub').textContent='Shorts are being forced to buy';
+  price=+(price*1.20).toFixed(2); path.push(price); quiet=0; draw(); paint();
+  timer=setInterval(step,170); };
+$('reset').onclick=()=>{reset();$('sub').textContent='GameStop · before the squeeze';};
+$('si').addEventListener('input',()=>{ if(!running) reset(); });
+window.draw=draw;
+reset();
+document.getElementById('thm').onclick=function(){
+ var c=document.documentElement.getAttribute('data-theme');
+ var dark=c?c==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
+ document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+ this.textContent=dark?'Dark':'Light';
+ if(window.draw)window.draw();};
+</script></body></html>
