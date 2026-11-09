@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What a Spread Costs You</title><style>
+
+
+:root{--bg:#fbfaf8;--card:#fff;--ink:#1c1b1a;--mut:#5f5c58;--line:#e3dfd9;
+--org:#d4560a;--orgs:#fdf0e6;--nav:#1f3864;--navs:#eaeefa;--grn:#17683f;--grns:#e8f5ed;
+--red:#b3261e;--reds:#fdecea;--shadow:0 1px 2px rgba(0,0,0,.05),0 4px 14px rgba(0,0,0,.04)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15161a;--card:#1e2027;--ink:#eceaf0;
+--mut:#a3a0ad;--line:#32353f;--org:#ff9245;--orgs:#3a2415;--nav:#9db4e8;--navs:#1b2740;--grn:#5fcf96;
+--grns:#13301f;--red:#ff7b6e;--reds:#3a1a17;--shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25)}}
+:root[data-theme="dark"]{--bg:#15161a;--card:#1e2027;--ink:#eceaf0;--mut:#a3a0ad;--line:#32353f;
+--org:#ff9245;--orgs:#3a2415;--nav:#9db4e8;--navs:#1b2740;--grn:#5fcf96;--grns:#13301f;
+--red:#ff7b6e;--reds:#3a1a17;--shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+-webkit-text-size-adjust:100%}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 70px}
+header{border-top:5px solid var(--org);background:var(--card);border-bottom:1px solid var(--line)}
+.hd{max-width:980px;margin:0 auto;padding:20px 16px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h1{margin:0;font-size:clamp(21px,3.5vw,30px);letter-spacing:-.025em;flex:1 1 auto}
+.kick{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--org)}
+.hook{max-width:980px;margin:0 auto;padding:0 16px 18px;color:var(--mut);font-size:15.5px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--mut);
+margin:30px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+button{font-family:inherit}
+.big{appearance:none;border:0;background:var(--org);color:#fff;font-size:16px;font-weight:700;
+padding:13px 26px;border-radius:10px;cursor:pointer;box-shadow:var(--shadow)}
+.big:active{transform:translateY(1px)}
+.big:disabled{opacity:.4;cursor:default}
+.alt{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--ink);
+font-size:14.5px;font-weight:600;padding:11px 17px;border-radius:10px;cursor:pointer}
+.alt.on{background:var(--nav);border-color:var(--nav);color:#fff}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}
+.sw{font-size:14px;color:var(--mut);display:flex;gap:7px;align-items:center;cursor:pointer;
+border:1px solid var(--line);background:var(--card);padding:9px 14px;border-radius:10px}
+.sw.on{border-color:var(--org);color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+box-shadow:var(--shadow);margin:12px 0}
+.pay{border-left:4px solid var(--org);background:var(--orgs);border-radius:0 10px 10px 0;
+padding:14px 18px;margin:14px 0;font-size:15px}
+.pay b{color:var(--org)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.st{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 14px;text-align:center}
+.st .v{font-size:clamp(19px,3.4vw,27px);font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.st .k{font-size:11px;font-weight:650;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);margin-top:3px}
+.st.hot .v{color:var(--red)}.st.good .v{color:var(--grn)}.st.o .v{color:var(--org)}
+.mut{color:var(--mut);font-size:13.5px}
+.thm{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--mut);
+font-size:12.5px;font-weight:650;padding:6px 12px;border-radius:99px;cursor:pointer}
+.note{font-size:13.5px;color:var(--mut);margin-top:8px}
+
+.px{font-size:clamp(40px,10vw,76px);font-weight:800;letter-spacing:-.035em;line-height:1;
+font-variant-numeric:tabular-nums;text-align:center;margin:6px 0 2px;color:var(--grn)}
+.sub{text-align:center;font-size:13px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+color:var(--mut);min-height:20px;margin-bottom:12px}
+#chart{width:100%;height:160px;display:block;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.shorts{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:12px}
+@media(max-width:760px){.shorts{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:450px){.shorts{grid-template-columns:repeat(2,1fr)}}
+.sh{background:var(--card);border:2px solid var(--line);border-radius:11px;padding:10px;text-align:center;
+transition:border-color .25s,background .25s,transform .25s}
+.sh .nm{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.sh .at{font-size:16px;font-weight:800;margin:3px 0 1px;font-variant-numeric:tabular-nums}
+.sh .st{font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;margin-top:5px;color:var(--grn)}
+.sh.called{border-color:var(--org);background:var(--orgs)}
+.sh.called .st{color:var(--org)}
+.sh.out{border-color:var(--red);background:var(--reds);transform:scale(.95)}
+.sh.out .st{color:var(--red)}
+.gauge{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:12px}
+.gauge .row{display:flex;justify-content:space-between;font-size:13.5px;font-weight:650;margin-bottom:6px}
+.track{height:22px;border-radius:7px;background:var(--navs);overflow:hidden;position:relative}
+.track .f{height:100%;background:var(--nav);transition:width .3s}
+.track .f.over{background:var(--red)}
+.track .mk{position:absolute;top:-3px;bottom:-3px;width:3px;background:var(--ink);opacity:.55}
+input[type=range]{width:100%;accent-color:var(--org)}
+.sh .brk{font-size:11px;font-weight:700;color:var(--nav);margin-top:4px}
+.sh.out .brk{color:var(--red)}
+.sh.called .brk{color:var(--org)}
+.lever{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:12px}
+.lever .row{display:flex;justify-content:space-between;font-size:13.5px;font-weight:650;margin-bottom:5px}
+.lever .row .n{color:var(--org);font-variant-numeric:tabular-nums}
+.lever+.lever{margin-top:10px}
+.pricepct{font-size:14px;font-weight:700;color:var(--mut);text-align:center;margin-top:-2px}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0 4px}
+.sp{flex:1 1 150px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px 12px;
+text-align:left;cursor:pointer;font:inherit;color:var(--mut)}
+.sp .y{font-size:11px;font-weight:800;letter-spacing:.08em}
+.sp .t{font-size:13.5px;font-weight:650;color:var(--ink);margin-top:1px}
+.sp.on{border-color:var(--org);background:var(--orgs)}
+.sp.on .y{color:var(--org)}
+.stage{display:none}.stage.on{display:block}
+.quote{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch;margin:14px 0}
+@media(max-width:560px){.quote{grid-template-columns:1fr}}
+.qs{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-align:center;
+box-shadow:var(--shadow)}
+.qs .k{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--mut)}
+.qs .v{font-size:clamp(24px,4.5vw,34px);font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:2px}
+.qs.bid .v{color:var(--grn)}.qs.ask .v{color:var(--red)}
+.qs .sz{font-size:12.5px;color:var(--mut);margin-top:2px}
+.spr{display:grid;place-items:center;padding:0 6px}
+.spr .k{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--mut)}
+.spr .v{font-size:19px;font-weight:800;color:var(--org);font-variant-numeric:tabular-nums}
+.book{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:12px 0}
+.bl{display:flex;align-items:center;gap:9px;font-size:12.5px;font-variant-numeric:tabular-nums;margin:2px 0}
+.bl .p{width:66px;text-align:right;font-weight:700}
+.bl.a .p{color:var(--red)}.bl.b .p{color:var(--grn)}
+.bl .bar{flex:1 1 auto;height:15px;border-radius:4px;background:var(--navs);overflow:hidden}
+.bl .f{height:100%;background:var(--nav);transition:width .15s}
+.bl.a .f{background:var(--red);opacity:.55}.bl.b .f{background:var(--grn);opacity:.55}
+.bl .q{width:52px;font-size:11.5px;color:var(--mut)}
+.bl.hit .bar{outline:2px solid var(--org)}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:560px){.cmp{grid-template-columns:1fr}}
+.cc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.cc.win{border-color:var(--grn);background:var(--grns)}
+.cc .k{font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--mut)}
+.cc .v{font-size:clamp(21px,4vw,30px);font-weight:800;font-variant-numeric:tabular-nums;margin-top:3px}
+.cc.win .v{color:var(--grn)}
+.lev{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0}
+.lev .row{display:flex;justify-content:space-between;font-size:13.5px;font-weight:650;margin-bottom:5px}
+.lev .row .n{color:var(--org);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--org)}
+.fillrow{font-size:13px;color:var(--mut);font-variant-numeric:tabular-nums;margin-top:8px;line-height:1.5}
+.verd{font-size:clamp(17px,2.8vw,22px);font-weight:750;text-align:center;margin:14px 0 2px;letter-spacing:-.01em}
+.verd.g{color:var(--grn)}.verd.r{color:var(--red)}
+</style></head><body>
+<header><div class="hd"><div style="flex:1 1 auto"><div class="kick">FIN 4113 · Market structure, 1997 to today</div>
+<h1>What a Spread Costs You</h1></div><button class="thm" id="thm">Dark</button></div></header>
+<div class="hook">Four rule changes, thirteen years apart. You are the one placing the orders, and every screen ends with a number you paid.</div>
+<div class="wrap">
+
+<div class="steps" id="steps"></div>
+
+<!-- ============ 1997 ============ -->
+<section class="stage" id="s0">
+<h2>1997. Quotes move in eighths of a dollar</h2>
+<p class="lead">A specialist posts a price to buy from you and a price to sell to you. By rule the smallest gap
+between them is one eighth, 12.5 cents. He is showing size, because that spread pays him to.</p>
+<div class="quote">
+  <div class="qs bid"><div class="k">Bid, he buys at</div><div class="v">$20.00</div><div class="sz">5,000 shares</div></div>
+  <div class="spr"><div class="k">Spread</div><div class="v">12.5&cent;</div></div>
+  <div class="qs ask"><div class="k">Ask, he sells at</div><div class="v">$20.125</div><div class="sz">5,000 shares</div></div>
+</div>
+<div class="bar"><button class="big" id="rt0">Buy 100, then sell them straight back</button>
+<button class="alt" id="rz0">Reset</button></div>
+<div class="stats">
+  <div class="st o"><div class="v" id="n0">0</div><div class="k">Round trips</div></div>
+  <div class="st hot"><div class="v" id="c0">$0</div><div class="k">What it cost you</div></div>
+  <div class="st"><div class="v" id="m0">$0</div><div class="k">What he earned</div></div>
+</div>
+<div class="pay" id="p0" style="display:none"><b>You did nothing and you are down money.</b> You bought at his ask
+and sold at his bid, and the stock never moved. That gap is not a fee anyone announced. It is the price of
+demanding immediacy, and it is the oldest revenue line in the securities business.</div>
+</section>
+
+<!-- ============ 2001 ============ -->
+<section class="stage" id="s1">
+<h2>2001. Decimalization. The tick drops to a penny</h2>
+<p class="lead">Same stock, same specialist, one rule change. He can now quote in cents, and competition pushes
+the spread to the minimum. Look at what happened to the size he is willing to show.</p>
+<div class="quote">
+  <div class="qs bid"><div class="k">Bid</div><div class="v">$20.00</div><div class="sz">300 shares</div></div>
+  <div class="spr"><div class="k">Spread</div><div class="v">1&cent;</div></div>
+  <div class="qs ask"><div class="k">Ask</div><div class="v">$20.01</div><div class="sz">300 shares</div></div>
+</div>
+<div class="bar"><button class="big" id="rt1">Buy 100, then sell them straight back</button>
+<button class="alt" id="rz1">Reset</button></div>
+<div class="cmp">
+  <div class="cc"><div class="k">Same trade in 1997</div><div class="v" id="a1">$12.50</div></div>
+  <div class="cc win"><div class="k">In 2001</div><div class="v" id="b1">$1.00</div></div>
+</div>
+<div class="pay"><b>Twelve times cheaper, and that is real.</b> For anyone trading a hundred shares, the modern
+market is not slightly better, it is dramatically better. Most of the argument about market structure ends here,
+and for most investors it should.</div>
+
+<h2>Now try it with size</h2>
+<p class="lead">He only shows 300 shares at a penny, because a penny does not pay him to show more. Drag the
+order up and watch what you have to climb through to get filled.</p>
+<div class="lev">
+  <div class="row"><span>Order size</span><span class="n" id="qv">100 shares</span></div>
+  <input type="range" id="q" min="100" max="10000" value="100" step="100">
+</div>
+<div class="cmp">
+  <div class="cc" id="cA"><div class="k">Round trip in eighths, 1997</div><div class="v" id="a2">$12.50</div></div>
+  <div class="cc" id="cB"><div class="k">Round trip in pennies, 2001</div><div class="v" id="b2">$1.00</div></div>
+</div>
+<div class="verd" id="v2"></div>
+<div class="book" id="bk1"></div>
+<div class="pay"><b>Find the crossover yourself.</b> Somewhere around 3,750 shares the thin penny book becomes
+the more expensive place to trade, and the old wide-spread market with real size behind it wins. Decimalization
+did not make trading cheaper. It made small trading much cheaper and large trading harder, which is why
+institutions started slicing orders into hundreds of small pieces, and why there is now an industry built on
+doing that for them.</div>
+</section>
+
+<!-- ============ 2010 ============ -->
+<section class="stage" id="s2">
+<h2>2010. Everything is fast now</h2>
+<p class="lead">Quotes update many times a second. You click on a price you can see. Between your click and your
+order arriving, that price has had time to leave.</p>
+<div class="quote">
+  <div class="qs bid"><div class="k">Bid</div><div class="v" id="qb">$20.00</div><div class="sz">300 shares</div></div>
+  <div class="spr"><div class="k">Spread</div><div class="v">1&cent;</div></div>
+  <div class="qs ask"><div class="k">Ask</div><div class="v" id="qa">$20.01</div><div class="sz">300 shares</div></div>
+</div>
+<div class="bar">
+  <button class="big" id="hit">Buy 300 at the ask you see</button>
+  <label class="sw" id="cow"><input type="checkbox" id="colo"> Pay for co-location, no delay</label>
+  <button class="alt" id="rz2">Reset</button>
+</div>
+<div class="stats">
+  <div class="st"><div class="v" id="n2">0</div><div class="k">Orders sent</div></div>
+  <div class="st hot"><div class="v" id="s2v">0.0&cent;</div><div class="k">Average slippage</div></div>
+  <div class="st"><div class="v" id="w2">0</div><div class="k">Filled worse than shown</div></div>
+</div>
+<div class="fillrow" id="log2"></div>
+<div class="pay"><b>Run ten without co-location, then ten with it.</b> The spread on the screen says one cent
+either way. What you actually pay does not, because in the time your order spends travelling, the people who can
+see it coming have already moved. Co-location is sold by the exchange, by the rack, by the metre of cable.</div>
+<div class="pay"><b>This is the part that is genuinely contested.</b> One reading is that you are being front run.
+The other is that a market maker who cannot pull a stale quote has to widen it for everyone, and you would pay
+that instead. Both are defensible and the evidence is mixed. Decide which you believe and be ready to say why.</div>
+</section>
+
+<!-- ============ CRASH ============ -->
+<section class="stage" id="s3">
+<h2>May 6, 2010. What a thin book does under stress</h2>
+<p class="lead">Nothing here is new. Same penny spread, same 300 shares a level, same market makers who are free
+to stop quoting whenever they like. A fund now has to sell 20,000 shares and does not care what it gets.</p>
+<div class="verd" id="px3" style="font-size:clamp(30px,8vw,56px);font-weight:800;color:var(--org)">$20.00</div>
+<div class="bar">
+  <button class="big" id="dump">Sell 20,000 shares</button>
+  <label class="sw" id="luw"><input type="checkbox" id="luld"> Limit Up Limit Down bands, added 2013</label>
+  <button class="alt" id="rz3">Reset</button>
+</div>
+<div class="stats">
+  <div class="st"><div class="v" id="f3">0</div><div class="k">Shares filled</div></div>
+  <div class="st hot"><div class="v" id="l3">$20.00</div><div class="k">Worst price</div></div>
+  <div class="st"><div class="v" id="d3">20,000</div><div class="k">Order left unfilled</div></div>
+</div>
+<div class="book" id="bk3"></div>
+<div class="pay"><b>You predicted this two screens ago.</b> Three hundred shares a level and no obligation to
+quote is a market that works beautifully for a hundred shares and has nothing underneath it when somebody needs
+to move twenty thousand. The 2010 crash was not caused by a new kind of trader. It was the ordinary structure,
+asked a question it was never built to answer.</div>
+<div class="pay"><b>Now tick the band and sell again.</b> The band does not add a single buyer and it does not
+calm anybody down. It stops a price from printing more than a set distance from where the stock just was, and
+pauses trading instead. That is the whole fix, and it is why a bigger volatility spike in August 2024 produced
+nothing like 2010.</div>
+</section>
+
+</div>
+<script>
+const $=s=>document.getElementById(s);
+const M=20.00;
+const REG={ eighths:{tick:0.125,size:5000,dp:3}, decimals:{tick:0.01,size:300,dp:2} };
+const money=v=>'$'+v.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+
+/* walk a ladder from the touch: returns total cash for q shares */
+function walk(reg,q,side){
+  const {tick,size}=REG[reg]; let left=q,tot=0,lvl=0,fills=[];
+  while(left>0){
+    const take=Math.min(size,left);
+    const px=side==='buy' ? M+tick*(lvl+1) : M-tick*lvl;
+    tot+=take*px; left-=take; fills.push([take,px]); lvl++;
+  }
+  return {tot,fills};
+}
+const roundTrip=(reg,q)=>walk(reg,q,'buy').tot-walk(reg,q,'sell').tot;
+
+function renderBook(el,reg,hitLv){
+  const {tick,size,dp}=REG[reg]; let h='';
+  for(let i=4;i>=0;i--){ const px=M+tick*(i+1), w=hitLv!=null&&i<hitLv?0:100;
+    h+=`<div class="bl a"><span class="p">$${px.toFixed(dp)}</span><span class="bar"><span class="f" style="width:${w}%"></span></span><span class="q">${w?size.toLocaleString():0}</span></div>`;}
+  h+=`<div class="bl" style="margin:6px 0"><span class="p" style="color:var(--mut);font-size:11px">spread</span><span class="bar" style="background:none"></span><span class="q"></span></div>`;
+  for(let i=0;i<5;i++){ const px=M-tick*i;
+    h+=`<div class="bl b"><span class="p">$${px.toFixed(dp)}</span><span class="bar"><span class="f" style="width:100%"></span></span><span class="q">${size.toLocaleString()}</span></div>`;}
+  el.innerHTML=h;
+}
+
+/* ---------- stage 0: eighths ---------- */
+let n0=0;
+$('rt0').onclick=()=>{ n0++; const c=roundTrip('eighths',100);
+  $('n0').textContent=n0;
+  $('c0').textContent=money(c*n0); $('m0').textContent=money(c*n0);
+  if(n0>=2)$('p0').style.display='block'; };
+$('rz0').onclick=()=>{ n0=0;$('n0').textContent=0;$('c0').textContent='$0';$('m0').textContent='$0';$('p0').style.display='none'; };
+
+/* ---------- stage 1: decimals + size ---------- */
+let n1=0;
+$('rt1').onclick=()=>{ n1++; const e=roundTrip('eighths',100), d=roundTrip('decimals',100);
+  $('a1').textContent=money(e*n1); $('b1').textContent=money(d*n1); };
+$('rz1').onclick=()=>{ n1=0; $('a1').textContent='$12.50'; $('b1').textContent='$1.00'; };
+function sizeCalc(){
+  const q=+$('q').value;
+  $('qv').textContent=q.toLocaleString()+' shares';
+  const e=roundTrip('eighths',q), d=roundTrip('decimals',q);
+  $('a2').textContent=money(e); $('b2').textContent=money(d);
+  $('cA').classList.toggle('win',e<d); $('cB').classList.toggle('win',d<e);
+  const v=$('v2');
+  if(Math.abs(e-d)<6){ v.className='verd'; v.textContent='Dead even. This is the crossover.'; }
+  else if(d<e){ v.className='verd g'; v.textContent=`Pennies win by ${money(e-d)}.`; }
+  else { v.className='verd r'; v.textContent=`Eighths win by ${money(d-e)}. The thin book is now the expensive one.`; }
+  const {size}=REG.decimals;
+  renderBook($('bk1'),'decimals',Math.ceil(q/size));
+}
+$('q').addEventListener('input',sizeCalc);
+
+/* ---------- stage 2: speed ---------- */
+let ask=20.01, bid=20.00, n2=0, slip=0, worse=0, jit=null, log=[];
+function jitter(){ const r=Math.random();
+  if(r<.42) ask=+(ask+0.01).toFixed(2); else if(r<.84) ask=+(ask-0.01).toFixed(2);
+  ask=Math.min(20.06,Math.max(19.97,ask)); bid=+(ask-0.01).toFixed(2);
+  $('qa').textContent='$'+ask.toFixed(2); $('qb').textContent='$'+bid.toFixed(2); }
+function startJit(){ if(!jit) jit=setInterval(jitter,150); }
+function stopJit(){ if(jit){clearInterval(jit);jit=null;} }
+$('hit').onclick=()=>{
+  const shown=ask, colo=$('colo').checked;
+  const settle=()=>{ const got=ask, d=+((got-shown)*100).toFixed(1);
+    n2++; slip+=d; if(d>0)worse++;
+    log.unshift(`saw $${shown.toFixed(2)} &rarr; filled $${got.toFixed(2)}  ${d>0?'<b style="color:var(--red)">+'+d+'&cent;</b>':d<0?'<b style="color:var(--grn)">'+d+'&cent;</b>':'no change'}${colo?'  (co-located)':''}`);
+    $('n2').textContent=n2; $('s2v').textContent=(slip/n2).toFixed(1)+'\u00a2';
+    $('w2').textContent=worse; $('log2').innerHTML=log.slice(0,6).join('<br>');
+    startJit(); };
+  stopJit();
+  if(colo){ settle(); return; }
+  // the order is in flight. whoever can see it coming steps away from the price.
+  setTimeout(()=>{ const r=Math.random();
+    const fade = r<.70 ? 0.01 : r<.85 ? 0.02 : 0;
+    ask=+(ask+fade).toFixed(2); bid=+(ask-0.01).toFixed(2);
+    $('qa').textContent='$'+ask.toFixed(2); $('qb').textContent='$'+bid.toFixed(2);
+    settle(); },300);
+};
+$('rz2').onclick=()=>{ n2=0;slip=0;worse=0;log=[];ask=20.01;bid=20.00;
+  $('n2').textContent=0;$('s2v').textContent='0.0¢';$('w2').textContent=0;$('log2').innerHTML='';
+  $('qa').textContent='$20.01';$('qb').textContent='$20.00'; };
+$('colo').addEventListener('change',()=>$('cow').classList.toggle('on',$('colo').checked));
+
+/* ---------- stage 3: the dump ---------- */
+const LVL=500, STUB=0.01;
+const lvlSize=i=>Math.max(1,Math.round(300*Math.exp(-i/12)));   // quotes thin out as it drops
+const lvlPx=i=>+(M-0.01*i).toFixed(2);
+function dump(){
+  const LU=$('luld').checked, floorPx=+(M*0.95).toFixed(2);
+  let left=20000, i=0, filled=0, px=M, halted=false, stub=false;
+  while(left>0 && i<LVL){
+    const p=lvlPx(i);
+    if(LU && p<floorPx){ halted=true; break; }
+    const take=Math.min(lvlSize(i),left);
+    filled+=take; left-=take; px=p; i++;
+  }
+  if(left>0 && !halted){ stub=true; px=STUB; filled+=left; left=0; }
+  $('f3').textContent=filled.toLocaleString();
+  $('l3').textContent='$'+px.toFixed(2);
+  $('d3').textContent=left.toLocaleString();
+  const el=$('px3');
+  el.textContent='$'+px.toFixed(2)+(halted?'   HALTED':stub?'   STUB QUOTE':'');
+  el.style.color = halted?'var(--org)':'var(--red)';
+  renderThin($('bk3'), i);
+}
+function renderThin(el,eaten){
+  let h='';
+  for(let i=0;i<10;i++){
+    const gone=i<eaten, sz=lvlSize(i), w=gone?0:100*sz/300;
+    h+=`<div class="bl b"><span class="p">$${lvlPx(i).toFixed(2)}</span>`+
+       `<span class="bar"><span class="f" style="width:${w}%"></span></span>`+
+       `<span class="q">${gone?0:sz}</span></div>`;
+  }
+  h+=`<div class="fillrow">Real bids go about 500 levels deep and hold roughly 4,100 shares in total, because `+
+     `each level is thinner than the one above it. Below that there is nothing but a one cent stub quote.</div>`;
+  el.innerHTML=h;
+}
+$('dump').onclick=dump;
+$('rz3').onclick=()=>{ $('f3').textContent='0';$('l3').textContent='$20.00';$('d3').textContent='20,000';
+  $('px3').textContent='$20.00';$('px3').style.color='var(--org)'; renderThin($('bk3'),0); };
+$('luld').addEventListener('change',()=>$('luw').classList.toggle('on',$('luld').checked));
+
+/* ---------- stepper ---------- */
+const STAGES=[['1997','Eighths'],['2001','Decimals'],['2010','Speed'],['May 6, 2010','The crash']];
+let CUR=0;
+function go(i){ CUR=i;
+  document.querySelectorAll('.stage').forEach((s,k)=>s.classList.toggle('on',k===i));
+  document.querySelectorAll('.sp').forEach((s,k)=>s.classList.toggle('on',k===i));
+  if(i===2) startJit(); else stopJit();
+  window.scrollTo({top:0,behavior:'instant'});
+}
+$('steps').innerHTML=STAGES.map(([y,t],i)=>`<button class="sp" data-i="${i}"><div class="y">${y}</div><div class="t">${t}</div></button>`).join('');
+$('steps').onclick=e=>{ const b=e.target.closest('.sp'); if(b) go(+b.dataset.i); };
+renderBook($('bk1'),'decimals',1); renderThin($('bk3'),0); sizeCalc(); go(0);
+document.getElementById('thm').onclick=function(){
+ var c=document.documentElement.getAttribute('data-theme');
+ var dark=c?c==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
+ document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+ this.textContent=dark?'Dark':'Light';};
+</script></body></html>
